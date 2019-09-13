@@ -39,9 +39,12 @@ public class Todo extends Auditable
 		this.user = user;
 	}
 
-	public Todo(Todo t, User currentUser)
-	{
-		super();
+	public Todo(Todo clone, User user){
+		this.todoid = clone.getTodoid();
+		this.description = clone.getDescription();
+		this.completed = clone.isCompleted();
+		this.datestarted = clone.getDatestarted();
+		this.user = user;
 	}
 
 	// getters and setters

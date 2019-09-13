@@ -29,13 +29,30 @@ public class UserController
 	private TodoService todoService;
 
 	// GET localhost:2019/users/mine
-//	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
 	@GetMapping(value = "/mine", produces = {"application/json"})
 	public ResponseEntity<?> getTodoData()
 	{
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User data = userService.findUserByName(authentication.getName());
 		return new ResponseEntity<>(data, HttpStatus.OK);
+	}
+
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+	@PostMapping(value = "", consumes = {"application/json"}, produces = {"application/json"})
+	public ResponseEntity<?> addNewUser(@Valid @RequestBody User newuser) throws URISyntaxException
+	{
+		newuser =  userService.save(newuser);
+
+		// set the location header for the newly created resource
+		HttpHeaders responseHeaders = new HttpHeaders();
+		URI newUserURI = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.path("/{userid}")
+				.buildAndExpand(newuser.getUserid())
+				.toUri();
+		responseHeaders.setLocation(newUserURI);
+
+		return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
 	}
 
 	// GET localhost:2019/users/getusername
@@ -53,22 +70,6 @@ public class UserController
 //		return new ResponseEntity<>(u, HttpStatus.OK);
 //	}
 
-//	@PostMapping(value = "/user", consumes = {"application/json"}, produces = {"application/json"})
-//	public ResponseEntity<?> addNewUser(@Valid @RequestBody User newuser) throws URISyntaxException
-//	{
-//		newuser =  userService.save(newuser);
-//
-//		// set the location header for the newly created resource
-//		HttpHeaders responseHeaders = new HttpHeaders();
-//		URI newUserURI = ServletUriComponentsBuilder
-//				.fromCurrentRequest()
-//				.path("/{userid}")
-//				.buildAndExpand(newuser.getUserid())
-//				.toUri();
-//		responseHeaders.setLocation(newUserURI);
-//
-//		return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
-//	}
 //
 //
 //	@PutMapping(value = "/user/{id}")
