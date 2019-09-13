@@ -23,7 +23,6 @@ public class User extends Auditable
 			unique = true)
 	private String username;
 
-	@Column(nullable = false)
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	// for security, Jackson never allows pw to be printed out
 	// WRITE - bringing in / READ - sending out
@@ -107,9 +106,9 @@ public class User extends Auditable
 		return todos;
 	}
 
-	public void setQuotes(List<Todo> quotes)
+	public void setTodos(List<Todo> todos)
 	{
-		this.todos = quotes;
+		this.todos = todos;
 	}
 
 	// boilerplate code

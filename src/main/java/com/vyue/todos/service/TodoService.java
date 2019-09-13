@@ -2,15 +2,15 @@ package com.vyue.todos.service;
 
 import com.vyue.todos.model.Todo;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface TodoService
 {
-	ArrayList<Todo> findAll();
+	List<Todo> findAll();
 
 	Todo findTodoById(long id);
 
-//	Todo findTodoByName(String name);
+	List<Todo> findByUserName(String name);
 
 	void delete(long id);
 

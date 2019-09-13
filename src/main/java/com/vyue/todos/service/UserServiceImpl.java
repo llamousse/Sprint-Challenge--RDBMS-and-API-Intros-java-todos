@@ -6,6 +6,8 @@ import com.vyue.todos.model.UserRoles;
 import com.vyue.todos.repository.RoleRepository;
 import com.vyue.todos.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -67,24 +69,23 @@ public class UserServiceImpl implements UserService, UserDetailsService
 	@Override
 	public User save(User user)
 	{
-//		User newUser = new User();
-//		newUser.setUsername(user.getUsername());
-//		newUser.setPasswordNoEncrypt(user.getPassword());
-//
-//		ArrayList<UserRoles> newRoles = new ArrayList<>();
-//		for (UserRoles ur : user.getUserRoles())
-//		{
-//			newRoles.add(new UserRoles(newUser, ur.getRole()));
-//		}
-//		newUser.setUserRoles(newRoles);
-//
-//		for (Todo t : user.getTodos())
-//		{
-//			newUser.getTodos().add(new Todo(t.getTodo(), newUser));
-//		}
-//
-//		return userrepos.save(newUser);
-		return null;
+		User newUser = new User();
+		newUser.setUsername(user.getUsername());
+		newUser.setPasswordNoEncrypt(user.getPassword());
+
+		ArrayList<UserRoles> newRoles = new ArrayList<>();
+		for (UserRoles ur : user.getUserRoles())
+		{
+			newRoles.add(new UserRoles(newUser, ur.getRole()));
+		}
+		newUser.setUserRoles(newRoles);
+
+		for (Todo t : user.getTodos())
+		{
+			newUser.getTodos().add(new Todo(t, newUser));
+		}
+
+		return userrepos.save(newUser);
 	}
 
 	@Override
@@ -105,40 +106,41 @@ public class UserServiceImpl implements UserService, UserDetailsService
 	@Override
 	public User update(User user, long id)
 	{
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = userrepos.findByUsername(authentication.getName());
 //		User currentUser = userrepos.findById(id).orElseThrow(() -> new EntityNotFoundException(Long.toString(id)));
-//
-//		if (user.getUsername() != null)
-//		{
-//			currentUser.setUsername(user.getUsername());
-//		}
-//
-//		if (user.getPassword() != null)
-//		{
-//			currentUser.setPasswordNoEncrypt(user.getPassword());
-//		}
-//
-//		if (user.getUserRoles().size() > 0)
-//		{
-//			// with so many relationships happening, I decided to go
-//			// with old school queries
-//			// delete the old ones
-//			rolerepos.deleteUserRolesByUserId(currentUser.getUserid());
-//
-//			// add the new ones
-//			for (UserRoles ur : user.getUserRoles())
-//			{
-//				rolerepos.insertUserRoles(id, ur.getRole().getRoleid());
-//			}
-//		}
-//
-//		if (user.getTodos().size() > 0)
-//		{
-//			for (Todo t : user.getTodos())
-//			{
-//				currentUser.getTodos().add(new Todo(t.getTodo(), currentUser));
-//			}
-//		}
-//		return userrepos.save(currentUser);
-		return null;
+
+		if (user.getUsername() != null)
+		{
+			currentUser.setUsername(user.getUsername());
+		}
+
+		if (user.getPassword() != null)
+		{
+			currentUser.setPasswordNoEncrypt(user.getPassword());
+		}
+
+		if (user.getUserRoles().size() > 0)
+		{
+			// with so many relationships happening, I decided to go
+			// with old school queries
+			// delete the old ones
+			rolerepos.deleteUserRolesByUserId(currentUser.getUserid());
+
+			// add the new ones
+			for (UserRoles ur : user.getUserRoles())
+			{
+				rolerepos.insertUserRoles(id, ur.getRole().getRoleid());
+			}
+		}
+
+		if (user.getTodos().size() > 0)
+		{
+			for (Todo t : user.getTodos())
+			{
+				currentUser.getTodos().add(new Todo(t, currentUser));
+			}
+		}
+		return userrepos.save(currentUser);
 	}
 }

@@ -1,6 +1,7 @@
 package com.vyue.todos.controller;
 
 import com.vyue.todos.model.User;
+import com.vyue.todos.service.TodoService;
 import com.vyue.todos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -23,13 +25,17 @@ public class UserController
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private TodoService todoService;
+
 	// GET localhost:2019/users/mine
 //	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
 	@GetMapping(value = "/mine", produces = {"application/json"})
-	public ResponseEntity<?> listMyTodos()
+	public ResponseEntity<?> getTodoData()
 	{
-		List<User> myTodos = userService.findAll();
-		return new ResponseEntity<>(myTodos, HttpStatus.OK);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User data = userService.findUserByName(authentication.getName());
+		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 
 	// GET localhost:2019/users/getusername

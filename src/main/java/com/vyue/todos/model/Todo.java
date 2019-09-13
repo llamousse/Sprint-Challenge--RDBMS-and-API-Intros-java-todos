@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "todo")
+@Table(name = "todos")
 public class Todo extends Auditable
 {
 	@Id
@@ -22,15 +22,26 @@ public class Todo extends Auditable
 
 	// many todos to one user
 	@ManyToOne
-	@JoinColumn(name = "userid")
-	@JsonIgnoreProperties("todo")
+	@JoinColumn(name = "userid",
+				nullable = false)
+	@JsonIgnoreProperties("todos")
 	private User user;
+
+	public Todo()
+	{
+	}
 
 	public Todo(String description, Date datestarted, User user)
 	{
 		this.description = description;
 		this.datestarted = datestarted;
+		this.completed = false;
 		this.user = user;
+	}
+
+	public Todo(Todo t, User currentUser)
+	{
+		super();
 	}
 
 	// getters and setters

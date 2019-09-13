@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service(value = "todoService")
 public class TodoServiceImpl implements TodoService
@@ -20,9 +21,9 @@ public class TodoServiceImpl implements TodoService
 	private ToDoRepository todorepos;
 
 	@Override
-	public ArrayList<Todo> findAll()
+	public List<Todo> findAll()
 	{
-		ArrayList<Todo> list = new ArrayList<>();
+		List<Todo> list = new ArrayList<>();
 		todorepos.findAll().iterator().forEachRemaining(list::add);
 		return list;
 	}
@@ -34,19 +35,15 @@ public class TodoServiceImpl implements TodoService
 				.orElseThrow(() -> new EntityNotFoundException(Long.toString(id)));
 	}
 
-//	@Override
-//	public Todo findTodoByName(String name) throws EntityNotFoundException
-//	{
-//		Todo currentTodo = todorepos.findByToDoname(name);
-//
-//		if (currentTodo != null)
-//		{
-//			return currentTodo;
-//		} else
-//		{
-//			throw new EntityNotFoundException(name);
-//		}
-//	}
+	@Override
+	public List<Todo> findByUserName(String username)
+	{
+		List<Todo> list = new ArrayList();
+		todorepos.findAll().iterator().forEachRemaining(list::add);
+
+		list.removeIf(todo->!todo.getUser().getUsername().equalsIgnoreCase(username));
+		return list;
+	}
 
 	@Transactional
 	@Override
