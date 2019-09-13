@@ -108,7 +108,6 @@ public class UserServiceImpl implements UserService, UserDetailsService
 	{
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = userrepos.findByUsername(authentication.getName());
-//		User currentUser = userrepos.findById(id).orElseThrow(() -> new EntityNotFoundException(Long.toString(id)));
 
 		if (user.getUsername() != null)
 		{

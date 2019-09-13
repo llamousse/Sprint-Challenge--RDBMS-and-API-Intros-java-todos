@@ -25,9 +25,6 @@ public class UserController
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private TodoService todoService;
-
 	// GET localhost:2019/users/mine
 	@GetMapping(value = "/mine", produces = {"application/json"})
 	public ResponseEntity<?> getTodoData()
@@ -37,6 +34,7 @@ public class UserController
 		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 
+	// POST - localhost:2019/users
 	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
 	@PostMapping(value = "", consumes = {"application/json"}, produces = {"application/json"})
 	public ResponseEntity<?> addNewUser(@Valid @RequestBody User newuser) throws URISyntaxException
@@ -55,35 +53,12 @@ public class UserController
 		return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
 	}
 
-	// GET localhost:2019/users/getusername
-//	@GetMapping(value = "/getusername", produces = {"application/json"})
-//	public ResponseEntity<?> getUserName(Authentication authentication)
-//	{
-//		return new ResponseEntity<>(userService.findUserByName(authentication.getName()), HttpStatus.OK);
-//	}
-
-	// GET localhost:2019/users/user/2
-//	@GetMapping(value = "/user/{userId}", produces = {"application/json"})
-//	public ResponseEntity<?> getUser(@PathVariable Long userId)
-//	{
-//		User u = userService.findUserById(userId);
-//		return new ResponseEntity<>(u, HttpStatus.OK);
-//	}
-
-//
-//
-//	@PutMapping(value = "/user/{id}")
-//	public ResponseEntity<?> updateUser(@RequestBody User updateUser, @PathVariable long id)
-//	{
-//		userService.update(updateUser, id);
-//		return new ResponseEntity<>(HttpStatus.OK);
-//	}
-//
-//
-//	@DeleteMapping("/user/{id}")
-//	public ResponseEntity<?> deleteUserById(@PathVariable long id)
-//	{
-//		userService.delete(id);
-//		return new ResponseEntity<>(HttpStatus.OK);
-//	}
+	// DELETE - localhost:2019/users/userid/{userid}
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+	@DeleteMapping("/userid/{userid}")
+	public ResponseEntity<?> deleteUserById(@PathVariable long userid)
+	{
+		userService.delete(userid);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 }

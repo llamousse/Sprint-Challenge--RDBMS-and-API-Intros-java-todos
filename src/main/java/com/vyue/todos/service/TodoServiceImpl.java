@@ -5,6 +5,8 @@ import com.vyue.todos.repository.ToDoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,10 +53,16 @@ public class TodoServiceImpl implements TodoService
 	{
 		if (todorepos.findById(id).isPresent())
 		{
-			todorepos.deleteById(id);
-
-			logger.info("Todo Deleted");
-		}else
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			if (todorepos.findById(id).get().getUser().getUsername().equalsIgnoreCase(authentication.getName()))
+			{
+				todorepos.deleteById(id);
+				logger.info("Todo Deleted");
+			} else
+			{
+				throw new EntityNotFoundException(authentication.getName());
+			}
+		} else
 		{
 			throw new EntityNotFoundException(Long.toString(id));
 		}
@@ -65,18 +73,7 @@ public class TodoServiceImpl implements TodoService
 	@Override
 	public Todo save(Todo todo)
 	{
-//		Todo newTodo = new Todo();
-//
-//		newTodo.setTodoname(todo.getTodoname());
-//
-//		for (Telephone t:zoo.getTelephones())
-//		{
-//			newZoo.getTelephones().add(new Telephone(t.getPhonetype(),t.getPhonenumber(), newZoo));
-//		}
-//
-//		logger.info("Updating a Zoo");
 		return todorepos.save(todo);
-//		return null;
 	}
 
 
@@ -99,7 +96,5 @@ public class TodoServiceImpl implements TodoService
 
 		logger.info("Creating a Todo");
 		return todorepos.save(newTodo);
-//		return null;
 	}
-
 }
