@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/todos")
 public class TodoController
 {
 	@Autowired
 	private TodoService todoService;
 
 	// GET: localhost:2019/users/mine
-	@GetMapping(value = "/mine", produces = {"application/json"})
-	public ResponseEntity<?> listAllTodos()
-	{
-		return new ResponseEntity<>(todoService.findAll(), HttpStatus.OK);
-	}
+//	@GetMapping(value = "/mine", produces = {"application/json"})
+//	public ResponseEntity<?> listAllTodos()
+//	{
+//		return new ResponseEntity<>(todoService.findAll(), HttpStatus.OK);
+//	}
 }

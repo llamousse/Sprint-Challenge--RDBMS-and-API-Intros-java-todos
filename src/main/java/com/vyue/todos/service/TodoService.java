@@ -10,7 +10,7 @@ public interface TodoService
 
 	Todo findTodoById(long id);
 
-	Todo findTodoByName(String name);
+//	Todo findTodoByName(String name);
 
 	void delete(long id);
 

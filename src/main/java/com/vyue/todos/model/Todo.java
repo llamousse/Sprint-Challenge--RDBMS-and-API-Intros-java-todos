@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "todo")
@@ -16,7 +17,7 @@ public class Todo extends Auditable
 	@Column(nullable = false)
 	private String description;
 
-	private LocalDateTime datestarted;
+	private Date datestarted;
 	private boolean completed;
 
 	// many todos to one user
@@ -25,11 +26,10 @@ public class Todo extends Auditable
 	@JsonIgnoreProperties("todo")
 	private User user;
 
-	public Todo(String description, LocalDateTime datestarted, boolean completed, User user)
+	public Todo(String description, Date datestarted, User user)
 	{
 		this.description = description;
 		this.datestarted = datestarted;
-		this.completed = completed;
 		this.user = user;
 	}
 
@@ -54,12 +54,12 @@ public class Todo extends Auditable
 		this.description = description;
 	}
 
-	public LocalDateTime getDatestarted()
+	public Date getDatestarted()
 	{
 		return datestarted;
 	}
 
-	public void setDatestarted(LocalDateTime datestarted)
+	public void setDatestarted(Date datestarted)
 	{
 		this.datestarted = datestarted;
 	}
@@ -87,6 +87,11 @@ public class Todo extends Auditable
 	@Override
 	public String toString()
 	{
-		return "Todo{" + "todoid=" + todoid + ", description='" + description + '\'' + ", datestarted=" + datestarted + ", completed=" + completed + ", user=" + user + '}';
+		return "Todo{" +
+				"todoid=" + todoid +
+				", description='" + description + '\'' +
+				", datestarted=" + datestarted +
+				", completed=" + completed +
+				", user=" + user + '}';
 	}
 }
